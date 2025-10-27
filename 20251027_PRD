@@ -1,0 +1,81 @@
+
+
+Two paths: 1) Strip personalized dosing and reposition as non‑device education; 2) Ship an app under Class II via a 510(k) with full SaMD documentation, HF/UE, risk, and validation.
+
+Path 1: Changes to keep it “educational only”
+
+To remain outside FDA device oversight, the page must avoid producing patient‑specific directives and make its outputs clearly illustrative.
+ • Intended use & audience: Reframe to “professional education/reference,” not patient self‑management or dosing. Remove language implying real‑time treatment decisions or reminders.
+ • No personalized dose: Eliminate “Recommended Dose” and any numeric unit output tied to user inputs. Keep formulas and worked examples that are not user‑specific.
+ • Options, not directives: Present methods (ICR “500 rule,” ISF “1800 rule,” correction formula) as references with ranges and caveats; do not instruct “take X units.”
+ • Expose the basis: Show transparent logic, assumptions, and citations so a clinician can independently review the rationale rather than rely on the tool.
+ • Inputs presentation: If you retain interactive elements, sandbox them to demonstrate how calculations work (e.g., sliders that update an example), but do not convert a user’s clinical data into a dosing directive.
+ • Time‑critical context: Remove alarms, prompts, or reminders that could imply the tool governs care (e.g., “Check glucose in 2 hours”).
+ • Labeling & disclaimers: Strengthen “education‑only” labeling; add explicit “not for diagnosis or treatment” and “not for patient use to determine insulin dose” statements; avoid references to hospital protocols for rounding.
+ • No device connections: Do not integrate with CGM, meters, pumps, EHR order sets, or workflows that could transform it into a dosing tool.
+ • Population boundaries: Avoid claims for pediatric safety or specific insulins; keep content general and literature‑based.
+ • Visual hierarchy: Emphasize methods and citations, de‑emphasize calculators; consider converting the calculator into a static explainer with stepwise math examples.
+
+Path 2: PRD and phases for a Class II FDA‑cleared app
+
+Product Requirements Document (PRD)
+ • Product name: T1D/T2D Bolus Support App (SaMD).
+ • Intended use: To assist users on rapid‑acting insulin therapy by computing meal and correction bolus recommendations based on entered BG, carbs, ICR, ISF, and configured clinical parameters. Output is a numeric dose and rationale.
+ • Indications for use: Adults with diabetes using rapid‑acting insulin in outpatient settings; not for basal dosing; not for DKA, pregnancy, or inpatient critical care.
+ • Contraindications/limitations: Exclude pediatrics (initial release), pregnancy, severe renal/hepatic impairment, use without clinician‑configured parameters; clarify reliance on most recent HCP‑provided targets.
+ • Regulatory classification: Class II SaMD; premarket pathway: 510(k) with bolus calculator predicate (or De Novo if no suitable predicate).
+ • Platforms: iOS/Android phones; English US.
+ • Core functions:
+ ▫ Inputs: current BG (mg/dL and mmol/L), carbs, ICR, ISF, target BG; insulin type metadata; meal tags (breakfast/lunch/dinner).
+ ▫ Processing: correction dose, carb coverage, total dose; rounding per configurable protocol; guardrails (dose caps, BG limits).
+ ▫ Outputs: numeric dose with step‑by‑step rationale; uncertainty cues and “considerations” when inputs are out of bounds.
+ ▫ Configuration: clinician‑locked parameters; patient view/edit permissions per prescription.
+ ▫ Logging: local secure logs; export of dose history.
+ • Safety requirements:
+ ▫ Guardrails: maximum single bolus; BG range checks; warnings for hypoglycemia risk; mg/dL/mmol/L unit lock and confirmation; error handling for missing/implausible inputs.
+ ▫ Fail‑safe behavior: no output when inputs invalid; clear guidance to contact clinician for edge cases.
+ • Human factors (HF/UE):
+ ▫ High‑contrast dose display; explicit unit labeling; confirmation step before dose acceptance; mis‑entry prevention (e.g., keypad filters, extreme value warnings); comprehension testing of rounding rules and unit conversions.
+ • Risk management (ISO 14971):
+ ▫ Hazards: over/underdose, unit confusion, time‑critical misinterpretation, pediatric misapplication, localization errors.
+ ▫ Controls: parameter locking, input validation, dual‑confirmation for unit changes, rounding policy transparency, dose caps, clear indications/contraindications in labeling.
+ • Cybersecurity:
+ ▫ Threat model; secure storage (OS keychain/Keystore); code signing; TLS for any remote content; SBOM; vulnerability management; secure update process.
+ • Clinical evaluation:
+ ▫ Analytical validation: algorithm correctness across ranges and edge cases; unit conversion fidelity; rounding logic verification.
+ ▫ Clinical association: literature linking ICR/ISF formulas and bolus calculators to safe/effective dosing in indicated populations.
+ ▫ Clinical validation: usability‑linked safety outcomes; simulation studies and, if needed, prospective observational data in intended users.
+ • Interoperability: Standalone app at launch; no device control; optional read‑only integrations later (postmarket change control).
+ • Labeling:
+ ▫ Indications, setup instructions, warnings, limitations, parameter management, emergency guidance; comprehensive IFU and quick‑start.
+ • Quality system: Design controls aligned to IEC 62304; software life‑cycle documents; configuration management; anomaly handling per SW91.
+ • Metrics & monitoring: Postmarket complaint handling, adverse event reporting, periodic safety reviews.
+
+Phases and deliverables
+ 1. Regulatory strategy & Q‑Sub (4–6 weeks)
+ ▫ Define intended use and indications; predicate analysis; submit a Pre‑Submission to confirm pathway, evidence, and documentation scope.
+ ▫ Deliverables: Regulatory plan; draft indications; risk categorization; Q‑Sub package.
+ 2. Requirements & design controls kickoff (4–8 weeks)
+ ▫ Freeze PRD; create SRS, software architecture, detailed design; risk management plan (ISO 14971); HF/UE plan (IEC 62366‑1).
+ ▫ Deliverables: SRS, architecture diagrams, risk plan, HF/UE protocol, cybersecurity plan, traceability matrix.
+ 3. Implementation & verification (8–12 weeks)
+ ▫ Build app; unit/integration/system tests; algorithmic test harness; localization and unit handling; dose guardrails.
+ ▫ Deliverables: V&V reports, code review records, SBOM, anomaly log, performance test results.
+ 4. Human factors summative study (6–8 weeks)
+ ▫ Conduct summative HF testing with intended users; demonstrate correct parameter setup and dose comprehension; capture residual use risks.
+ ▫ Deliverables: HF study report, mitigations, labeling refinements.
+ 5. Clinical evaluation & validation (parallel, 6–12 weeks)
+ ▫ Analytical validation complete; clinical association dossier; targeted validation (simulation/observational) as agreed with FDA.
+ ▫ Deliverables: Clinical evaluation report; statistical analysis; risk‑benefit justification.
+ 6. Labeling & 510(k) compilation (4–6 weeks)
+ ▫ Finalize IFU, warnings, indications; assemble software documentation per FDA Content of Premarket Submissions for Device Software Functions (Enhanced set).
+ ▫ Deliverables: 510(k) sections (device description, SE comparison, testing, labeling, risk, HF/UE, clinical), eCopy.
+ 7. Submission & review (90 days target)
+ ▫ File 510(k); respond to RTA/AI (Additional Information) promptly; maintain traceability for any updates.
+ ▫ Deliverables: AI responses; minor revisions; clearance letter.
+ 8. Pre‑launch readiness (2–4 weeks)
+ ▫ Final QA; distribution controls; registration & listing; complaint handling SOPs; postmarket surveillance plan.
+ 9. Postmarket (ongoing)
+ ▫ Monitor field performance; handle complaints/MDRs; periodic updates under software change guidance; evaluate enhancements via PCCP (if applicable in future).
+
+Assumptions documented: smartphone SaMD for adults on rapid‑acting insulin in the US; standalone app without device control at launch; 510(k) pathway with Enhanced documentation; guardrails and HF/UE prioritized to mitigate dosing risks.
