@@ -2,35 +2,20 @@
 
 ## Opening the Project in Xcode
 
-### Option 1: Create New Xcode Project (Recommended)
+### Option 1: Create the Xcode Project (Recommended for the app)
 
-1. **Open Xcode**
-2. **File → New → Project**
-3. **Select "iOS App"**
-4. **Configure:**
-   - Product Name: `T1DCalculator`
-   - Team: (Your Apple ID)
-   - Organization Identifier: `studio.humaine`
-   - Bundle Identifier: `studio.humaine.T1DCalculator`
-   - Interface: **SwiftUI**
-   - Language: **Swift**
-   - Storage: None
-   - Include Tests: **Yes**
+Follow the steps in `README.md` → Installation.
 
-5. **Save to:** `/Users/chrismcconnell/GitHub/T1DCalculator`
-6. **Replace default files:**
-   - Delete the auto-generated `ContentView.swift` and `T1DCalculatorApp.swift`
-   - Add existing files via **File → Add Files to "T1DCalculator"...**
-   - Select all `.swift` files in the directory
-
-### Option 2: Use Swift Package Manager
+### Option 2: Swift Package Manager (engine tests only)
 
 ```bash
-cd /Users/chrismcconnell/GitHub/T1DCalculator
-open Package.swift
+bash check-setup.sh   # or: swift test
 ```
 
-Xcode will open the package. However, note that Swift Packages can't run iOS apps directly - they're better for libraries.
+`Package.swift` builds only `InsulinCalculator.swift` plus the two test
+files, so the 34 unit tests run on macOS with Xcode, or with Command Line
+Tools plus Xcode.app installed. The SwiftUI views are not part of the package;
+use the Xcode project for the app.
 
 ---
 

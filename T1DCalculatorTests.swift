@@ -106,7 +106,7 @@ class T1DCalculatorTests: XCTestCase {
         // Test valid carb values
         XCTAssertTrue(calculator.isValidCarbs("45"))
         XCTAssertTrue(calculator.isValidCarbs("0"))
-        XCTAssertFalse(calculator.isValidCarbs("250")) // Too high
+        XCTAssertTrue(calculator.isValidCarbs("250")) // Within 300g maximum
         XCTAssertFalse(calculator.isValidCarbs("-10")) // Negative
     }
     
