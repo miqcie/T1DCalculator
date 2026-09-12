@@ -1,96 +1,51 @@
 #!/bin/bash
+# T1D Calculator setup check. Exits non-zero on any failure.
+# Verifies the repo layout, the single .gitignore, and runs the
+# calculation-engine XCTest suite via Swift Package Manager.
+set -euo pipefail
+cd "$(dirname "$0")"
 
-# T1D Calculator - Xcode Project Setup Script
-# This script helps verify your environment is ready
+fail() { echo "FAIL: $*" >&2; exit 1; }
 
-echo "🏥 T1D Calculator - Xcode Project Setup"
-echo "========================================"
-echo ""
-
-# Check if Xcode is installed
-if command -v xcodebuild &> /dev/null; then
-    echo "✅ Xcode is installed"
-    xcodebuild -version
-else
-    echo "❌ Xcode is NOT installed"
-    echo "   Please install Xcode from the App Store"
-    exit 1
-fi
-
-echo ""
-echo "📁 Current Directory: $(pwd)"
-echo ""
-
-# Check for required Swift files
-echo "🔍 Checking for required Swift files..."
-required_files=(
-    "T1DCalculatorApp.swift"
-    "ContentView.swift"
-    "InsulinCalculator.swift"
-    "CalculatorView.swift"
-    "ResultsView.swift"
-    "SourcesView.swift"
-)
-
-all_files_present=true
-for file in "${required_files[@]}"; do
-    if [ -f "$file" ]; then
-        echo "   ✅ $file"
-    else
-        echo "   ❌ $file (MISSING)"
-        all_files_present=false
-    fi
+for f in T1DCalculatorApp.swift ContentView.swift InsulinCalculator.swift \
+         CalculatorView.swift ResultsView.swift SourcesView.swift \
+         T1DCalculatorTests.swift T1DCalculatorTests_Enhanced.swift \
+         Package.swift Info.plist; do
+    [ -f "$f" ] || fail "missing $f"
 done
 
-echo ""
+stray=$(git ls-files | grep -E '^\.gitignore .+' || true)
+[ -z "$stray" ] || fail "stray gitignore copy tracked: $stray"
 
-# Check for test files
-echo "🧪 Checking for test files..."
-test_files=(
-    "T1DCalculatorTests.swift"
-    "T1DCalculatorTests_Enhanced.swift"
-)
+command -v swift >/dev/null || fail "swift not found; install Xcode or Command Line Tools"
 
-for file in "${test_files[@]}"; do
-    if [ -f "$file" ]; then
-        echo "   ✅ $file"
-    else
-        echo "   ❌ $file (MISSING)"
-    fi
-done
-
-echo ""
-
-# Check if Xcode project exists
-if [ -d "T1DCalculator.xcodeproj" ]; then
-    echo "📦 Xcode project: ✅ EXISTS"
-    echo ""
-    echo "🚀 You can now:"
-    echo "   1. Open the project: open T1DCalculator.xcodeproj"
-    echo "   2. Build: xcodebuild -scheme T1DCalculator build"
-    echo "   3. Run tests: xcodebuild -scheme T1DCalculator test"
+echo "Running engine tests..."
+if swift test 2>/tmp/t1d-swift-test.log | grep -E 'Executed|error:'; then
+    :
+elif grep -q "unable to resolve module dependency: 'XCTest'" /tmp/t1d-swift-test.log \
+     && [ -d /Applications/Xcode.app ]; then
+    # Command Line Tools ship no XCTest. Borrow Xcode's without needing
+    # xcode-select/xcodebuild (which require the Xcode license to be accepted).
+    echo "XCTest missing from Command Line Tools; using Xcode.app frameworks."
+    P=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer
+    F=$P/Library/Frameworks; PF=$P/Library/PrivateFrameworks; L=$P/usr/lib
+    swift build --build-tests -Xswiftc -F"$F" -Xswiftc -I"$L" -Xlinker -F"$F" -Xlinker -L"$L" \
+        -Xlinker -rpath -Xlinker "$F" -Xlinker -rpath -Xlinker "$PF" -Xlinker -rpath -Xlinker "$L" \
+        2>&1 | grep -E 'error:|Build complete' || fail "test build failed"
+    bundle=$(find .build -name 'T1DCalculatorTests.xctest' -type d | head -1)
+    [ -n "$bundle" ] || fail "test bundle not found under .build"
+    DYLD_FRAMEWORK_PATH="$F:$PF" DYLD_LIBRARY_PATH="$L" \
+        /Applications/Xcode.app/Contents/Developer/usr/bin/xctest "$bundle" >/tmp/t1d-xctest.log 2>&1 || true
+    grep -E "error:|Executed [0-9]+ tests" /tmp/t1d-xctest.log | tail -6
+    grep -qE "Test Suite 'All tests' passed" /tmp/t1d-xctest.log || fail "engine tests failed"
 else
-    echo "📦 Xcode project: ❌ NOT YET CREATED"
-    echo ""
-    if [ "$all_files_present" = true ]; then
-        echo "✨ Ready to create Xcode project!"
-        echo ""
-        echo "📖 Next steps:"
-        echo "   1. Read: CREATE_XCODE_PROJECT.md"
-        echo "   2. Open Xcode: open -a Xcode"
-        echo "   3. File → New → Project → iOS App"
-        echo "   4. Follow the guide in CREATE_XCODE_PROJECT.md"
-    else
-        echo "⚠️  Some Swift files are missing. Please check your repository."
-    fi
+    cat /tmp/t1d-swift-test.log >&2
+    fail "swift test failed"
 fi
 
-echo ""
-echo "📚 Documentation available:"
-[ -f "CREATE_XCODE_PROJECT.md" ] && echo "   ✅ CREATE_XCODE_PROJECT.md - How to create the Xcode project"
-[ -f "README.md" ] && echo "   ✅ README.md - Project overview"
-[ -f "TESTING_QUICKSTART.md" ] && echo "   ✅ TESTING_QUICKSTART.md - Testing guide"
-[ -f "QA_TESTING_PLAN.md" ] && echo "   ✅ QA_TESTING_PLAN.md - Full QA strategy"
-
-echo ""
-echo "✅ Setup check complete!"
+if [ -d T1DCalculator.xcodeproj ]; then
+    echo "Xcode project present: run 'xcodebuild -scheme T1DCalculator -destination \"platform=iOS Simulator,name=iPhone 16\" test' for the app target."
+else
+    echo "No Xcode project yet: see README.md > Installation to create one for the app."
+fi
+echo "OK: setup check passed"

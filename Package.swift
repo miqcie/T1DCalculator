@@ -1,14 +1,14 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-// NOTE: This Package.swift is kept for reference but not used for the iOS app.
-// The app uses an Xcode project (.xcodeproj) instead.
-// See CREATE_XCODE_PROJECT.md for instructions.
-
+// SwiftPM builds only the calculation engine so `swift test` runs anywhere
+// with a Swift toolchain. The SwiftUI views and app entry point are built by
+// the Xcode app project (see README.md > Installation).
 let package = Package(
     name: "T1DCalculator",
     platforms: [
-        .iOS(.v17)
+        .iOS(.v17),
+        .macOS(.v14)
     ],
     products: [
         .library(
@@ -20,18 +20,7 @@ let package = Package(
         .target(
             name: "T1DCalculator",
             path: ".",
-            exclude: [
-                "T1DCalculatorTests.swift",
-                "T1DCalculatorTests_Enhanced.swift",
-                "README.md",
-                "SESSION_CONTEXT.md",
-                "PROJECT_STATUS.md",
-                "QA_TESTING_PLAN.md",
-                "QA_CHECKLIST.md",
-                "TESTING_QUICKSTART.md",
-                "CHANGES_SUMMARY.md",
-                "CREATE_XCODE_PROJECT.md"
-            ]
+            sources: ["InsulinCalculator.swift"]
         ),
         .testTarget(
             name: "T1DCalculatorTests",

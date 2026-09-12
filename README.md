@@ -20,10 +20,25 @@ A native iOS app version of the Humaine Studio T1D Insulin Calculator, built wit
 
 ## Installation
 
-1. Open Xcode
-2. Create a new iOS App project
-3. Copy these Swift files into your project
-4. Build and run (⌘+R)
+Run the setup check first. It verifies the file layout and runs the
+34 calculation-engine unit tests through Swift Package Manager:
+
+```bash
+bash check-setup.sh
+```
+
+The SwiftUI app itself needs an Xcode project (SwiftPM cannot run iOS
+apps). Create it once, in this folder:
+
+1. Xcode: File → New → Project → iOS → App
+2. Product Name `T1DCalculator`, Organization Identifier `studio.humaine`, Interface SwiftUI, Language Swift, Include Tests checked
+3. Save into this repository folder
+4. Delete Xcode's generated `ContentView.swift` and `T1DCalculatorApp.swift`
+5. File → Add Files: add the six app `.swift` files to the `T1DCalculator` target and the two `*Tests*.swift` files to the `T1DCalculatorTests` target
+6. Build and run (⌘R); run tests (⌘U)
+
+Do not commit `xcuserdata/` or build output; `.gitignore` already covers them.
+See `TESTING_QUICKSTART.md` for the full testing workflow.
 
 ## Usage
 
