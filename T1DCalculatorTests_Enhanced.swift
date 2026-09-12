@@ -241,12 +241,12 @@ class T1DCalculatorTestsEnhanced: XCTestCase {
     func testBGValidationMgdl() {
         calculator.units = .mgdl
 
-        // Valid range: 20-600 mg/dL
-        XCTAssertTrue(calculator.isValidBG("20"), "20 mg/dL should be valid (minimum)")
+        // Valid range: 40-600 mg/dL
+        XCTAssertTrue(calculator.isValidBG("40"), "40 mg/dL should be valid (minimum)")
         XCTAssertTrue(calculator.isValidBG("120"), "120 mg/dL should be valid")
         XCTAssertTrue(calculator.isValidBG("600"), "600 mg/dL should be valid (maximum)")
 
-        XCTAssertFalse(calculator.isValidBG("10"), "10 mg/dL should be invalid (too low)")
+        XCTAssertFalse(calculator.isValidBG("20"), "20 mg/dL should be invalid (too low)")
         XCTAssertFalse(calculator.isValidBG("650"), "650 mg/dL should be invalid (too high)")
         XCTAssertFalse(calculator.isValidBG("abc"), "Non-numeric should be invalid")
     }
@@ -254,23 +254,23 @@ class T1DCalculatorTestsEnhanced: XCTestCase {
     func testBGValidationMmol() {
         calculator.units = .mmol
 
-        // Valid range: 1.1-33.3 mmol/L
-        XCTAssertTrue(calculator.isValidBG("1.1"), "1.1 mmol/L should be valid (minimum)")
+        // Valid range: 2.2-33.3 mmol/L
+        XCTAssertTrue(calculator.isValidBG("2.2"), "2.2 mmol/L should be valid (minimum)")
         XCTAssertTrue(calculator.isValidBG("6.7"), "6.7 mmol/L should be valid")
         XCTAssertTrue(calculator.isValidBG("33.3"), "33.3 mmol/L should be valid (maximum)")
 
-        XCTAssertFalse(calculator.isValidBG("0.5"), "0.5 mmol/L should be invalid (too low)")
+        XCTAssertFalse(calculator.isValidBG("1.1"), "1.1 mmol/L should be invalid (too low)")
         XCTAssertFalse(calculator.isValidBG("40.0"), "40.0 mmol/L should be invalid (too high)")
     }
 
     func testCarbsValidation() {
-        // Valid range: 0-200g
+        // Valid range: 0-300g
         XCTAssertTrue(calculator.isValidCarbs("0"), "0g should be valid")
         XCTAssertTrue(calculator.isValidCarbs("45"), "45g should be valid")
-        XCTAssertTrue(calculator.isValidCarbs("200"), "200g should be valid (maximum)")
+        XCTAssertTrue(calculator.isValidCarbs("300"), "300g should be valid (maximum)")
 
         XCTAssertFalse(calculator.isValidCarbs("-5"), "Negative carbs should be invalid")
-        XCTAssertFalse(calculator.isValidCarbs("250"), "250g should be invalid (too high)")
+        XCTAssertFalse(calculator.isValidCarbs("301"), "301g should be invalid (too high)")
         XCTAssertFalse(calculator.isValidCarbs("abc"), "Non-numeric should be invalid")
     }
 

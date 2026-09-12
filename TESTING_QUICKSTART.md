@@ -13,8 +13,9 @@ bash check-setup.sh   # or: swift test
 ```
 
 `Package.swift` builds only `InsulinCalculator.swift` plus the two test
-files, so the 34 unit tests run with any Swift toolchain. The SwiftUI
-views are not part of the package; use the Xcode project for the app.
+files, so the 34 unit tests run on macOS with Xcode, or with Command Line
+Tools plus Xcode.app installed. The SwiftUI views are not part of the package;
+use the Xcode project for the app.
 
 ---
 

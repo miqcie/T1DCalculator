@@ -1,9 +1,10 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-// SwiftPM builds only the calculation engine so `swift test` runs anywhere
-// with a Swift toolchain. The SwiftUI views and app entry point are built by
-// the Xcode app project (see README.md > Installation).
+// SwiftPM builds only the calculation engine so `swift test` can run on macOS
+// with Xcode, or with Command Line Tools plus Xcode.app installed. The SwiftUI
+// views and app entry point are built by the Xcode app project (see README.md
+// > Installation).
 let package = Package(
     name: "T1DCalculator",
     platforms: [
